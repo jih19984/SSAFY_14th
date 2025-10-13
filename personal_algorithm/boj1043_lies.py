@@ -128,3 +128,6 @@ else:
             lie_count += 1
     
     print(lie_count) 
+    
+    
+    
