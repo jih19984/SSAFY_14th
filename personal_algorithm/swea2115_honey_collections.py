@@ -41,32 +41,54 @@ N x N개의 벌통이 정사각형 모양을 배치되어 있음
 2단계
 같은 행에 2명의 일꾼이 모두 채취하는 경우도 고려해야함!
 """
-import sys
-input = sys.stdin.readline
 
-def dfs(idx, row_num):
-    global N, M, C, check
-
-    # 일꾼 2명이 끝났다면
-    if check == 0:
-        best = max(profit, best)
-
-    for row in range(row_num, N):
-        for i in range(idx, N-M+1):
-            check -= 1
-            price = 0
-            for j in range(i, M+i):
-                price = price + (honey_arr[row][j])
-                profit = profit + (honey_arr[row][j] ** 2)
-            if price > C:
-                price = 0
-                dfs(idx + 1, row_num + 1)
-            else:
-                dfs(idx + 1, row_num + 1)
+# 가격의 최댓값을 구하는 함수
+def get_max_price(x, y, cnt, honey_sum, price):
+    global result
+    if honey_sum > c:
+        return
+    result = max(result, price)
+    if cnt == m:
+        return
+    # 현재 벌통을 선택
+    get_max_price(x, y + 1, cnt + 1, honey_sum + grid[x][y], price + grid[x][y] ** 2)
+    # 현재 벌통을 선택하지 않음
+    get_max_price(x, y + 1, cnt + 1, honey_sum, price)
 
 
-N, M, C  = map(int, input().split())
-check, profit = 1, 0
-best = float('-inf')
-honey_arr = [list(map(int, input().split())) for _ in range(N)]
-dfs(0, 0)
+# 일꾼에 따라 최댓값을 구한 후 최종 가격 리턴
+def solve(x, y):
+    global result
+    # 첫 번째 일꾼
+    result = 0
+    get_max_price(x, y, 0, 0, 0)
+    priceA = result
+
+    # 두 번째 일꾼
+    priceB = 0
+    j = y + m
+    for i in range(x, n):
+        j = j if i == x else 0
+        while j < n - m + 1:
+            result = 0
+            get_max_price(i, j, 0, 0, 0)
+            priceB = max(priceB, result)
+            j += 1
+
+    return priceA + priceB
+
+
+t = int(input())
+
+for tc in range(1, t + 1):
+    n, m, c = map(int, input().split())
+    grid = [list(map(int, input().split())) for _ in range(n)]
+
+    max_price = 0
+
+    # 슬라이딩 윈도우 방식으로 모두 돌리기
+    for i in range(n):
+        for j in range(n - m + 1):
+            max_price = max(max_price, solve(i, j))
+
+    print(f"#{tc} {max_price}")
