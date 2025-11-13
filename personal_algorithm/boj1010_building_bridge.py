@@ -27,35 +27,22 @@ for문을 돌려서
 import sys
 input = sys.stdin.readline
 
-# combinations용 변수
-N = 3
-
-def combinations(cnt, st, num):
-    global total
-
-    if cnt == N:
-        total += 1
-        return
-    
-    for idx in range(st, num):
-        tmp.append(idx)
-        combinations(cnt+1, idx+1, num)
-        tmp.pop()
-
-# combinations(0, 0, 6)
-# print(result)
+def factorial(N):
+    if N > 1:
+        return factorial(N-1) * N
+    else:
+        return 1
+        
 
 T = int(input())
 
 for _ in range(T):
     N, M = map(int, input().split())
-    result = []
-    tmp = []
-    total = 0
+    result = 0
 
     if N == M:
         total = 1
     else:
-        combinations(0, 0, M)
+        total = factorial(M) // (factorial(N) * factorial(M-N))
     
     print(total)
