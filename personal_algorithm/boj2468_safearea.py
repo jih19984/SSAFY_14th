@@ -15,49 +15,50 @@ from collections import deque
 import sys
 input = sys.stdin.readline
 
-def bfs(start_r, start_c, visited, rain_level):
+""" 함수 정의"""
+def bfs(start_r, start_c, visited, high):
     queue = deque([(start_r, start_c)])
-    visited[start_r][start_c] = True
     
     while queue:
-        r, c = queue.popleft()
+        st_r, st_c = queue.popleft()
         for dr, dc in zip(dir_r, dir_c):
-            nr = r + dr
-            nc = c + dc
+            nr = st_r + dr
+            nc = st_c + dc
             if 0 <= nr < N and 0 <= nc < N:
-                if arr[nr][nc] > rain_level and not visited[nr][nc]:
+                if not visited[nr][nc] and arr[nr][nc] > high:
                     visited[nr][nc] = True
                     queue.append((nr, nc))
-        
-    
 
+""" 변수 및 객체 정의 """
 N = int(input())
 arr = [list(map(int, input().split())) for _ in range(N)]
-high_lst = []
+high_set = []
 dir_r = [1, 0, -1, 0]
 dir_c = [0, 1, 0, -1]
+max_safe_area_count = 0
 
-for i in range(N):
-    high_lst.extend(arr[i])
+""" 배열을 리스트로 묶어서 set로 변환 """
+for idx in range(N):
+    high_set.extend(arr[idx])
     
-high_lst = set(high_lst)
-high_lst.add(0)
+high_set = set(high_set)
 
-max_safe_areas = 0
+# 주의사항: 문제의 노트에 아무지역도 물에 잠기지 않을 수 있다고 적혀있음
+# high_set에 0을 추가해 어떤 지역도 잠기지 않는 것도 고려해야 함.
+high_set.add(0)
 
-for rain_level in high_lst:
+""" 높이 별로 안전한 영역 개수 계산"""
+for high in high_set:
     visited = [[False] * N for _ in range(N)]
     safe_area_count = 0
-    
     for r in range(N):
         for c in range(N):
-            if arr[r][c] > rain_level and not visited[r][c]:
-                bfs(r, c, visited, rain_level)
+            if arr[r][c] > high and not visited[r][c]:
+                visited[r][c] = True
+                bfs(r, c, visited, high)
                 safe_area_count += 1
-                
-    max_safe_areas = max(max_safe_areas, safe_area_count)
-    
 
-print(max_safe_areas)
+    max_safe_area_count = max(safe_area_count, max_safe_area_count)
     
-    
+""" 결과 출력 """
+print(max_safe_area_count)
