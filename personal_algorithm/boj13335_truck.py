@@ -1,7 +1,7 @@
 # 문제
 """
 start 15:42
-end
+end 17:35
 
 강을 가로지르는 하나의 차선으로 된 다리가 하나 있다.
 이 다리를 N개의 트럭이 건너가려고 한다.
@@ -29,29 +29,33 @@ end
 
 -> 생각해보니 버스가 한 그룹이 끝나고 다음 그룹이 들어오는 것이 아니다...
 """
-# from collections import deque
+from collections import deque
 
-# n, w, L = map(int, input().split())
-# trucks = list(map(int, input().split()))
+""" 변수 정의 """
+n, w, L = map(int, input().split())
+trucks = list(map(int, input().split()))
+bridge = deque([0] * w)
+time = 0
+truck_idx = 0 # truck_idx: 트럭에 0번부터 n-1까지 번호를 매김 
+bridge_weight = 0 # bridge_weight: 현재 다리의 무게
 
-# bridge = deque([0] * w)
-# time = 0
-# truck_idx = 0
-# bridge_weight = 0
-
-# while truck_idx < n or bridge_weight > 0:
-#     time += 1
+""" 반복문 """
+# 아직 출발하지 않은 트럭이 남아있거나
+# 다리에 트럭이 남아있는 경우
+while truck_idx < n or bridge_weight > 0:
+    time += 1
     
-#     exit_truck = bridge.popleft()
-#     bridge_weight -= exit_truck
+    exit_truck = bridge.popleft()
+    bridge_weight -= exit_truck
     
-#     if truck_idx < n and bridge_weight + trucks[truck_idx] <= L:
-#         bridge.append(trucks[truck_idx])
-#         bridge_weight += trucks[truck_idx]
-#         truck_idx += 1
-#     else:
-#         bridge.append(0)
+    if truck_idx < n and bridge_weight + trucks[truck_idx] <= L:
+        bridge.append(trucks[truck_idx])
+        bridge_weight += trucks[truck_idx]
+        truck_idx += 1
+    else:
+        # 다리 우측 끝에 0을 추가
+        bridge.append(0)
 
-# print(time)
+print(time)
         
     
